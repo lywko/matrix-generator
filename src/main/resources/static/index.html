@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор задач по линейной алгебре и теории матриц</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #response {
+            margin-top: 20px;
+        }
+
+        .task {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .task-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .task-content {
+            margin-left: 20px;
+            font-size: 18px;
+        }
+
+        .matrix, .vector, .polynomial {
+            margin-top: 10px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Генератор задач по линейной алгебре и теории матриц</h1>
+
+    <label for="counter">Введите количество задач:</label>
+    <input type="number" id="counter" name="counter">
+
+    <label for="action">Выберите тип задачи:</label>
+    <select id="action" name="action">
+        <option value="Matrix">Матрицы</option>
+        <option value="Vector">Векторы</option>
+        <option value="Polynomial">Уравнения</option>
+    </select>
+
+    <button id="sendButton">Сгенерировать задачи</button>
+
+    <div id="response"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('sendButton').addEventListener('click', () => {
+        const count = document.getElementById('counter').value;
+        const taskType = document.getElementById('action').value;
+        sendRequest('/generator/getTask', { taskType: taskType, count: parseInt(count) });
+    });
+
+    function sendRequest(url, data) {
+        axios.post(url, data)
+            .then(response => {
+                displayResponse(response.data);
+            })
+            .catch(error => {
+                document.getElementById('response').textContent = 'Ошибка: ' + error;
+            });
+    }
+
+    function displayResponse(data) {
+    const responseDiv = document.getElementById('response');
+    responseDiv.innerHTML = '';
+
+    if (data.message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = data.message;
+        responseDiv.appendChild(messageDiv);
+    }
+
+    if (data.result && Array.isArray(data.result)) {
+        data.result.forEach((task, index) => {
+            const taskDiv = document.createElement('div');
+            taskDiv.classList.add('task');
+
+            const taskHeader = document.createElement('div');
+            taskHeader.classList.add('task-header');
+            taskHeader.textContent = `Задание ${index + 1}: ${task.task}`;
+            taskDiv.appendChild(taskHeader);
+
+            const taskContent = document.createElement('div');
+            taskContent.classList.add('task-content');
+
+            if (task.matrix) {
+                const matrixDiv = document.createElement('div');
+                matrixDiv.classList.add('Матрица');
+                matrixDiv.innerHTML = `<strong>Матрица:</strong><pre>${task.matrix}</pre>`;
+                taskContent.appendChild(matrixDiv);
+            } else if (task.vector) {
+                const vectorDiv = document.createElement('div');
+                vectorDiv.classList.add('Вектор');
+                vectorDiv.innerHTML = `<strong>Вектор:</strong><br><pre>${task.vector}</pre>`;
+                taskContent.appendChild(vectorDiv);
+            } else if (task.polynomial) {
+                const polynomialDiv = document.createElement('div');
+                polynomialDiv.classList.add('Уравнение');
+                polynomialDiv.innerHTML = `<strong>Уравнение:</strong> ${task.polynomial}`;
+                taskContent.appendChild(polynomialDiv);
+            }
+
+            taskDiv.appendChild(taskContent);
+            responseDiv.appendChild(taskDiv);
+        });
+    } else {
+        responseDiv.textContent = 'Задания не найдены';
+    }
+}
+</script>
+</body>
+</html>
