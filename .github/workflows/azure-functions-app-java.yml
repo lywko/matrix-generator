@@ -46,12 +46,10 @@ jobs:
       with:
         java-version: ${{ env.JAVA_VERSION }}
 
-    - name: 'Restore Project Dependencies Using Gradle'
-      shell: pwsh # For Linux, use bash
-      run: |
-        pushd './${{ env.POM_XML_DIRECTORY }}'
-        gradle clean package
-        popd
+    - name: Build with Gradle
+      # You may pin to the exact commit or the version.
+      # uses: gradle/actions@db19848a5fa7950289d3668fb053140cf3028d43
+      uses: gradle/actions@v3.3.2
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
