@@ -1,6 +1,7 @@
 package com.matrix_generator.matrix_generator.tasks;
 
 import com.matrix_generator.matrix_generator.dto.PolynomialDto;
+import com.matrix_generator.matrix_generator.util.LaTeXConvertor;
 import com.matrix_generator.matrix_generator.util.RandomNumberGenerator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,11 @@ import java.util.Random;
 public class PolynomialTask implements TaskGenerator {
 
     private final RandomNumberGenerator randomNumberGenerator;
+    private final LaTeXConvertor laTeXConvertor;
 
-    public PolynomialTask(RandomNumberGenerator randomNumberGenerator) {
+    public PolynomialTask(RandomNumberGenerator randomNumberGenerator, LaTeXConvertor laTeXConvertor) {
         this.randomNumberGenerator = randomNumberGenerator;
+        this.laTeXConvertor = laTeXConvertor;
     }
 
     @Override
@@ -45,12 +48,14 @@ public class PolynomialTask implements TaskGenerator {
         int equations = randomNumberGenerator.getRandomNumber(3, 5);
         int variables = 3;
         StringBuilder sb = new StringBuilder();
-        sb.append("\n");
+        sb.append("\\begin{cases}\n"); // Начало системы уравнений
         for (int i = 0; i < equations; i++) {
             int[] coefficients = generateCoefficients(variables);
-            String equation = equationToString(coefficients);
-            sb.append(equation).append(" = 0\n");
+            String equation = laTeXConvertor.convertEquation(coefficients);
+            sb.append(equation).append(" = 0 \\\\ \n");
         }
+        sb.append("\\end{cases}"); // Конец системы уравнений
+
         return PolynomialDto.builder()
                 .task(task)
                 .polynomial(sb.toString())
@@ -62,12 +67,14 @@ public class PolynomialTask implements TaskGenerator {
         int equations = randomNumberGenerator.getRandomNumber(3, 5);
         int variables = 3;
         StringBuilder sb = new StringBuilder();
-        sb.append("\n");
+        sb.append("\\begin{cases}\n"); // Начало системы уравнений
         for (int i = 0; i < equations; i++) {
             int[] coefficients = generateCoefficients(variables);
-            String equation = equationToString(coefficients);
-            sb.append(equation).append(" = 0\n");
+            String equation = laTeXConvertor.convertEquation(coefficients);
+            sb.append(equation).append(" = 0 \\\\ \n");
         }
+        sb.append("\\end{cases}"); // Конец системы уравнений
+
         return PolynomialDto.builder()
                 .task(task)
                 .polynomial(sb.toString())
@@ -79,17 +86,20 @@ public class PolynomialTask implements TaskGenerator {
         int equations = randomNumberGenerator.getRandomNumber(3, 5);
         int variables = 3;
         StringBuilder sb = new StringBuilder();
-        sb.append("\n");
+        sb.append("\\begin{cases}\n"); // Начало системы уравнений
         for (int i = 0; i < equations; i++) {
             int[] coefficients = generateCoefficients(variables);
-            String equation = equationToString(coefficients);
-            sb.append(equation).append(" = 0\n");
+            String equation = laTeXConvertor.convertEquation(coefficients);
+            sb.append(equation).append(" = 0 \\\\ \n");
         }
+        sb.append("\\end{cases}"); // Конец системы уравнений
+
         return PolynomialDto.builder()
                 .task(task)
                 .polynomial(sb.toString())
                 .build();
     }
+
 
     private int[] generateCoefficients(int variables) {
         int[] coefficients = new int[variables + 1];
@@ -108,23 +118,5 @@ public class PolynomialTask implements TaskGenerator {
             if (num != 0) return false;
         }
         return true;
-    }
-
-    private String equationToString(int[] coefficients) {
-        StringBuilder sb = new StringBuilder();
-        int degree = coefficients.length - 1;
-        for (int i = 0; i <= degree; i++) {
-            int coeff = coefficients[i];
-            if (coeff == 0) continue;
-
-            if (i > 0 && coeff > 0) {
-                sb.append("+");
-            }
-            sb.append(coeff);
-            if (i < degree) {
-                sb.append("x").append(i + 1);
-            }
-        }
-        return sb.toString();
     }
 }

@@ -10,11 +10,15 @@
             margin: 0;
             padding: 0;
             background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
+            width: 90%;
             max-width: 800px;
-            margin: 50px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
@@ -24,6 +28,7 @@
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
         }
 
         label {
@@ -91,6 +96,8 @@
             word-wrap: break-word;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 <div class="container">
@@ -111,7 +118,6 @@
     <div id="response"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.getElementById('sendButton').addEventListener('click', () => {
         const count = document.getElementById('counter').value;
@@ -123,6 +129,7 @@
         axios.post(url, data)
             .then(response => {
                 displayResponse(response.data);
+                MathJax.typeset(); // Перерисовать формулы MathJax
             })
             .catch(error => {
                 document.getElementById('response').textContent = 'Ошибка: ' + error;
@@ -130,52 +137,54 @@
     }
 
     function displayResponse(data) {
-    const responseDiv = document.getElementById('response');
-    responseDiv.innerHTML = '';
+        const responseDiv = document.getElementById('response');
+        responseDiv.innerHTML = '';
 
-    if (data.message) {
-        const messageDiv = document.createElement('div');
-        messageDiv.textContent = data.message;
-        responseDiv.appendChild(messageDiv);
+        if (data.message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = data.message;
+            responseDiv.appendChild(messageDiv);
+        }
+
+        if (data.result && Array.isArray(data.result)) {
+            data.result.forEach((task, index) => {
+                const taskDiv = document.createElement('div');
+                taskDiv.classList.add('task');
+
+                const taskHeader = document.createElement('div');
+                taskHeader.classList.add('task-header');
+                taskHeader.textContent = `Задание ${index + 1}: ${task.task}`;
+                taskDiv.appendChild(taskHeader);
+
+                const taskContent = document.createElement('div');
+                taskContent.classList.add('task-content');
+
+                if (task.matrix) {
+                    const matrixDiv = document.createElement('div');
+                    matrixDiv.classList.add('matrix');
+                    matrixDiv.innerHTML = `<strong>Матрица:</strong><br><span class="mathjax-latex">\\(${task.matrix}\\)</span>`;
+                    taskContent.appendChild(matrixDiv);
+                } else if (task.vector) {
+                    const vectorDiv = document.createElement('div');
+                    vectorDiv.classList.add('vector');
+                    vectorDiv.innerHTML = `<strong>Вектор:</strong><br><span class="mathjax-latex">\\(${task.vector}\\)</span>`;
+                    taskContent.appendChild(vectorDiv);
+                } else if (task.polynomial) {
+                    const polynomialDiv = document.createElement('div');
+                    polynomialDiv.classList.add('polynomial');
+                    polynomialDiv.innerHTML = `<strong>Уравнение:</strong><br><span class="mathjax-latex">\\(${task.polynomial}\\)</span>`;
+                    taskContent.appendChild(polynomialDiv);
+                }
+
+                taskDiv.appendChild(taskContent);
+                responseDiv.appendChild(taskDiv);
+            });
+        } else {
+            responseDiv.textContent = 'Задания не найдены';
+        }
+
+        MathJax.typeset(); // Перерисовать формулы MathJax после добавления в DOM
     }
-
-    if (data.result && Array.isArray(data.result)) {
-        data.result.forEach((task, index) => {
-            const taskDiv = document.createElement('div');
-            taskDiv.classList.add('task');
-
-            const taskHeader = document.createElement('div');
-            taskHeader.classList.add('task-header');
-            taskHeader.textContent = `Задание ${index + 1}: ${task.task}`;
-            taskDiv.appendChild(taskHeader);
-
-            const taskContent = document.createElement('div');
-            taskContent.classList.add('task-content');
-
-            if (task.matrix) {
-                const matrixDiv = document.createElement('div');
-                matrixDiv.classList.add('Матрица');
-                matrixDiv.innerHTML = `<strong>Матрица:</strong><pre>${task.matrix}</pre>`;
-                taskContent.appendChild(matrixDiv);
-            } else if (task.vector) {
-                const vectorDiv = document.createElement('div');
-                vectorDiv.classList.add('Вектор');
-                vectorDiv.innerHTML = `<strong>Вектор:</strong><br><pre>${task.vector}</pre>`;
-                taskContent.appendChild(vectorDiv);
-            } else if (task.polynomial) {
-                const polynomialDiv = document.createElement('div');
-                polynomialDiv.classList.add('Уравнение');
-                polynomialDiv.innerHTML = `<strong>Уравнение:</strong> ${task.polynomial}`;
-                taskContent.appendChild(polynomialDiv);
-            }
-
-            taskDiv.appendChild(taskContent);
-            responseDiv.appendChild(taskDiv);
-        });
-    } else {
-        responseDiv.textContent = 'Задания не найдены';
-    }
-}
 </script>
 </body>
 </html>

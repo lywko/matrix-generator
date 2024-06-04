@@ -1,6 +1,7 @@
 package com.matrix_generator.matrix_generator.tasks;
 
 import com.matrix_generator.matrix_generator.dto.MatrixDto;
+import com.matrix_generator.matrix_generator.util.LaTeXConvertor;
 import com.matrix_generator.matrix_generator.util.RandomNumberGenerator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,11 @@ import java.util.Random;
 public class MatrixTask implements TaskGenerator{
 
     private final RandomNumberGenerator randomNumberGenerator;
+    private final LaTeXConvertor laTeXConvertor;
 
-    public MatrixTask(RandomNumberGenerator randomNumberGenerator) {
+    public MatrixTask(RandomNumberGenerator randomNumberGenerator, LaTeXConvertor laTeXConvertor) {
         this.randomNumberGenerator = randomNumberGenerator;
+        this.laTeXConvertor = laTeXConvertor;
     }
 
     @Override
@@ -46,7 +49,7 @@ public class MatrixTask implements TaskGenerator{
         int size = randomNumberGenerator.getRandomNumber(3, 7);
         int[][] matrix = generateMatrix(size, size);
 
-        String matrixString = matrixToString(matrix);
+        String matrixString = "A = " + laTeXConvertor.convertMatrix(matrix);
 
 
         return MatrixDto.builder()
@@ -62,10 +65,10 @@ public class MatrixTask implements TaskGenerator{
         int[][] matrixA = generateMatrix(size, size);
         int[][] matrixB = generateMatrix(size, size);
 
-        String matrixAString = matrixToString(matrixA);
-        String matrixBString = matrixToString(matrixB);
+        String matrixAString = "A = " + laTeXConvertor.convertMatrix(matrixA);
+        String matrixBString = "B = " + laTeXConvertor.convertMatrix(matrixB);
 
-        String matrixs = matrixAString + "; " + matrixBString;
+        String matrixs = matrixAString + " \\\\ " + ", " + matrixBString;
 
         return MatrixDto.builder()
                 .task(task)
@@ -79,7 +82,7 @@ public class MatrixTask implements TaskGenerator{
         int size = randomNumberGenerator.getRandomNumber(3, 7);
         int[][] matrix = generateMatrix(size, size);
 
-        String matrixString = matrixToString(matrix);
+        String matrixString = "A = " + laTeXConvertor.convertMatrix(matrix);
 
 
         return MatrixDto.builder()
@@ -92,7 +95,7 @@ public class MatrixTask implements TaskGenerator{
         String task = "Вычислить определитель матрицы A";
         int[][] matrix = generateMatrix(5, 5);
 
-        String matrixString = matrixToString(matrix);
+        String matrixString = "A = " + laTeXConvertor.convertMatrix(matrix);
 
 
         return MatrixDto.builder()
@@ -109,25 +112,5 @@ public class MatrixTask implements TaskGenerator{
             }
         }
         return matrix;
-    }
-
-    private String matrixToString(int[][] matrix) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\n");
-        for (int i = 0; i < matrix.length; i++) {
-            sb.append("  [");
-            for (int j = 0; j < matrix[i].length; j++) {
-                sb.append(matrix[i][j]);
-                if (j < matrix[i].length - 1) {
-                    sb.append(", ");
-                }
-            }
-            sb.append("]");
-            if (i < matrix.length - 1) {
-                sb.append(",\n");
-            }
-        }
-        sb.append("\n]");
-        return sb.toString();
     }
 }
