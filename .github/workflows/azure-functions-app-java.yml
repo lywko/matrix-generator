@@ -46,11 +46,11 @@ jobs:
       with:
         java-version: ${{ env.JAVA_VERSION }}
 
-    - name: 'Restore Project Dependencies Using Mvn'
+    - name: 'Restore Project Dependencies Using Gradle'
       shell: pwsh # For Linux, use bash
       run: |
         pushd './${{ env.POM_XML_DIRECTORY }}'
-        mvn clean package
+        gradle clean package
         popd
 
     - name: 'Run Azure Functions Action'
