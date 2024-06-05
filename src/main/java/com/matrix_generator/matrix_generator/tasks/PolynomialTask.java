@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Component
-@Qualifier("polynomialTask")
+@Component("polynomialTask")
 public class PolynomialTask implements TaskGenerator {
 
     private final RandomNumberGenerator randomNumberGenerator;
@@ -45,46 +44,38 @@ public class PolynomialTask implements TaskGenerator {
 
     public PolynomialDto defineByGauss(){
         String task = "Решить уравнение методом Гаусса";
-        int equations = randomNumberGenerator.getRandomNumber(3, 5);
-        int variables = 3;
-        StringBuilder sb = new StringBuilder();
-        sb.append("\\begin{cases}\n"); // Начало системы уравнений
-        for (int i = 0; i < equations; i++) {
-            int[] coefficients = generateCoefficients(variables);
-            String equation = laTeXConvertor.convertEquation(coefficients);
-            sb.append(equation).append(" = 0 \\\\ \n");
-        }
-        sb.append("\\end{cases}"); // Конец системы уравнений
+        String equation = generateEquation();
 
         return PolynomialDto.builder()
                 .task(task)
-                .polynomial(sb.toString())
+                .polynomial(equation)
                 .build();
     }
 
     public PolynomialDto elementingUnknown(){
         String task = "Решить уравнение методом исключения неизвестных";
-        int equations = randomNumberGenerator.getRandomNumber(3, 5);
-        int variables = 3;
-        StringBuilder sb = new StringBuilder();
-        sb.append("\\begin{cases}\n"); // Начало системы уравнений
-        for (int i = 0; i < equations; i++) {
-            int[] coefficients = generateCoefficients(variables);
-            String equation = laTeXConvertor.convertEquation(coefficients);
-            sb.append(equation).append(" = 0 \\\\ \n");
-        }
-        sb.append("\\end{cases}"); // Конец системы уравнений
+        String equation = generateEquation();
 
         return PolynomialDto.builder()
                 .task(task)
-                .polynomial(sb.toString())
+                .polynomial(equation)
                 .build();
     }
 
     public PolynomialDto generateCramersRuleTask() {
         String task = "Решить уравнение по правилу Крамера";
+        String equation = generateEquation();
+
+        return PolynomialDto.builder()
+                .task(task)
+                .polynomial(equation)
+                .build();
+    }
+
+    private String generateEquation() {
         int equations = randomNumberGenerator.getRandomNumber(3, 5);
         int variables = 3;
+
         StringBuilder sb = new StringBuilder();
         sb.append("\\begin{cases}\n"); // Начало системы уравнений
         for (int i = 0; i < equations; i++) {
@@ -94,10 +85,7 @@ public class PolynomialTask implements TaskGenerator {
         }
         sb.append("\\end{cases}"); // Конец системы уравнений
 
-        return PolynomialDto.builder()
-                .task(task)
-                .polynomial(sb.toString())
-                .build();
+        return sb.toString();
     }
 
 

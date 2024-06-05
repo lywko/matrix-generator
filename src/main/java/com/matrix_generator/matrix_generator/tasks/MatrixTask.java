@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Component
-@Qualifier("matrixTask")
+@Component("matrixTask")
 public class MatrixTask implements TaskGenerator{
 
     private final RandomNumberGenerator randomNumberGenerator;
