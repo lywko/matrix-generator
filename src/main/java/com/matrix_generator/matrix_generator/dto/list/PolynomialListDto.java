@@ -2,7 +2,6 @@ package com.matrix_generator.matrix_generator.dto.list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.matrix_generator.matrix_generator.dto.PolynomialDto;
-import com.matrix_generator.matrix_generator.dto.VectorDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

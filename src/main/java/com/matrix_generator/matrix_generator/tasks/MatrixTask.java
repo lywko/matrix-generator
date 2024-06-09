@@ -3,7 +3,6 @@ package com.matrix_generator.matrix_generator.tasks;
 import com.matrix_generator.matrix_generator.dto.MatrixDto;
 import com.matrix_generator.matrix_generator.util.LaTeXConvertor;
 import com.matrix_generator.matrix_generator.util.RandomNumberGenerator;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

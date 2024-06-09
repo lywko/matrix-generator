@@ -2,10 +2,7 @@ package com.matrix_generator.matrix_generator.controller;
 
 import com.matrix_generator.matrix_generator.dto.TaskRequestDto;
 import com.matrix_generator.matrix_generator.tasks.TaskGenerator;
-import org.apache.tomcat.util.threads.TaskThread;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

@@ -1,6 +1,5 @@
 package com.matrix_generator.matrix_generator.util;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
