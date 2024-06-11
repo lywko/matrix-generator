@@ -26,9 +26,6 @@ public class GetTaskController {
     @PostMapping("/getTask")
     public ResponseEntity<Map<String, Object>> getTask(@RequestBody TaskRequestDto taskRequestDto) {
         String taskType = taskRequestDto.getTaskType();
-        System.out.println("получен запрос");
-        System.out.println(taskRequestDto.getCount());
-        System.out.println(taskRequestDto.getTaskType());
 
         Map<String, Object> response = new HashMap<>();
         response.put("message","Сгенерированные задания");

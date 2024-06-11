@@ -46,6 +46,13 @@
             border-radius: 5px;
             font-size: 16px;
             margin-bottom: 15px;
+            box-sizing: border-box; /* Чтобы padding и border не влияли на общий размер */
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
         }
 
         button {
@@ -104,7 +111,8 @@
     <h1>Генератор задач по линейной алгебре и теории матриц</h1>
 
     <label for="counter">Введите количество задач:</label>
-    <input type="number" id="counter" name="counter">
+    <input type="number" id="counter" name="counter" min="1">
+    <div id="error-message" class="error-message"></div>
 
     <label for="action">Выберите тип задачи:</label>
     <select id="action" name="action">
@@ -122,6 +130,16 @@
     document.getElementById('sendButton').addEventListener('click', () => {
         const count = document.getElementById('counter').value;
         const taskType = document.getElementById('action').value;
+        const errorMessage = document.getElementById('error-message');
+
+        // Валидация значения поля ввода
+        if (count < 1) {
+            errorMessage.textContent = 'Количество задач должно быть больше 0';
+            return;
+        } else {
+            errorMessage.textContent = '';
+        }
+
         sendRequest('/generator/getTask', { taskType: taskType, count: parseInt(count) });
     });
 
